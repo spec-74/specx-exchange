@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SPECX · MVR ↔ USD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060b1a;--bg2:#0d1630;--ink:#f4f7ff;--mute:#9aa6c4;--glass:rgba(255,255,255,.07);--edge:rgba(255,255,255,.16);--hi:rgba(255,255,255,.28);--cy:#5fe3ff;--vi:#8b7bff;--ok:#3ddc97;--bad:#ff6b7a;--sh:0 20px 60px rgba(0,0,0,.45);color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#eef2fb;--bg2:#dfe7f8;--ink:#0b1430;--mute:#53607f;--glass:rgba(255,255,255,.55);--edge:rgba(255,255,255,.9);--hi:rgba(255,255,255,1);--cy:#0a8fb3;--vi:#5a47e0;--ok:#0f9d63;--bad:#d6334a;--sh:0 20px 50px rgba(30,50,110,.18);color-scheme:light}}
+:root[data-theme="light"]{--bg:#eef2fb;--bg2:#dfe7f8;--ink:#0b1430;--mute:#53607f;--glass:rgba(255,255,255,.55);--edge:rgba(255,255,255,.9);--hi:rgba(255,255,255,1);--cy:#0a8fb3;--vi:#5a47e0;--ok:#0f9d63;--bad:#d6334a;--sh:0 20px 50px rgba(30,50,110,.18);color-scheme:light}
+:root[data-theme="dark"]{color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px)}
+body{margin:0;font-family:Inter,"SF Pro Display",system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(1200px 700px at 15% -10%,var(--bg2),var(--bg));color:var(--ink);line-height:1.55;overflow-x:hidden;min-height:100vh;transition:background .4s,color .4s}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
+.glass{background:var(--glass);border:1px solid var(--edge);border-top-color:var(--hi);border-radius:28px;backdrop-filter:blur(26px) saturate(170%);-webkit-backdrop-filter:blur(26px) saturate(170%);box-shadow:var(--sh),inset 0 1px 0 var(--hi)}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;margin:12px auto 0;max-width:1080px;width:calc(100% - 24px);display:flex;align-items:center;gap:6px;padding:10px 14px;border-radius:999px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;margin-right:auto;color:var(--ink);text-decoration:none}
+.logo i{width:26px;height:26px;border-radius:50%;background:conic-gradient(from 200deg,var(--cy),var(--vi),var(--cy));box-shadow:inset 0 0 0 5px var(--bg),0 0 18px rgba(95,227,255,.5)}
+nav a.l{color:var(--mute);text-decoration:none;font-size:14px;font-weight:500;padding:7px 12px;border-radius:999px;transition:.2s}
+nav a.l:hover{color:var(--ink);background:var(--glass)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
+.tg{width:56px;height:30px;border-radius:999px;border:1px solid var(--edge);background:var(--glass);position:relative;padding:0;flex:none}
+.tg span{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--cy),var(--vi));display:grid;place-items:center;font-size:12px;transition:transform .45s cubic-bezier(.2,.9,.3,1.3)}
+:root[data-theme="light"] .tg span{transform:translateX(26px)}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]) .tg span{transform:translateX(26px)}}
+section{padding:84px 20px;max-width:1080px;margin:0 auto;position:relative}
+h1{font-size:clamp(40px,7vw,76px);line-height:1.02;letter-spacing:-.035em;margin:0 0 18px;font-weight:800}
+h2{font-size:clamp(28px,4vw,42px);letter-spacing:-.025em;margin:0 0 10px;font-weight:700}
+.sub{color:var(--mute);font-size:clamp(16px,2vw,19px);max-width:600px;margin:0 auto}
+#home{min-height:calc(100vh - 70px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:56px}
+.bg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.orb{position:absolute;border-radius:50%;background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.75),rgba(255,255,255,.08) 34%,rgba(95,227,255,.22) 62%,rgba(139,123,255,.3));border:1px solid var(--edge);box-shadow:0 30px 80px rgba(70,90,255,.28),inset -14px -18px 40px rgba(60,80,255,.25);animation:fl 14s ease-in-out infinite;will-change:transform}
+.o1{width:340px;height:340px;left:-90px;top:14%}.o2{width:200px;height:200px;right:6%;top:8%;animation-delay:-5s}.o3{width:120px;height:120px;right:22%;bottom:12%;animation-delay:-9s}
+.sym{position:absolute;font-weight:800;font-size:96px;color:var(--cy);opacity:.14;animation:fl 18s ease-in-out infinite;text-shadow:0 0 40px var(--cy)}
+.s1{left:12%;bottom:14%}.s2{right:10%;top:44%;animation-delay:-7s;color:var(--vi)}
+.px{will-change:transform;transition:transform .25s ease-out}
+@keyframes fl{50%{transform:translateY(-26px) rotate(6deg)}}
+.conv{width:100%;max-width:560px;margin-top:38px;padding:22px;text-align:left;transform-style:preserve-3d;transition:transform .2s ease-out}
+.panels{display:flex;flex-direction:column;position:relative;gap:10px}
+.pn{padding:16px 18px;border-radius:22px;background:rgba(255,255,255,.05);border:1px solid var(--edge);transition:order .3s,box-shadow .25s,border-color .25s}
+.pn:focus-within{border-color:var(--cy);box-shadow:0 0 0 4px rgba(95,227,255,.16)}
+.pn.top{order:0}.pn.bot{order:2}
+.pl{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute);font-weight:500}
+.pl b{color:var(--ink)}
+.row{display:flex;align-items:baseline;gap:6px}
+.row em{font-style:normal;font-size:26px;font-weight:600;color:var(--cy)}
+input.big{all:unset;width:100%;font-size:clamp(32px,7vw,46px);font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;min-width:0}
+input.big::placeholder{color:var(--mute);opacity:.5}
+.swap{order:1;align-self:center;width:46px;height:46px;border-radius:50%;margin:-22px 0;z-index:2;border:1px solid var(--hi);background:linear-gradient(135deg,var(--cy),var(--vi));color:#fff;font-size:20px;box-shadow:0 8px 24px rgba(95,227,255,.35);transition:transform .45s cubic-bezier(.2,.9,.3,1.3)}
+.swap:hover{transform:scale(1.08)}.swap:active{transform:scale(.92)}.swap.r{transform:rotate(180deg)}
+.seg{display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--edge);margin-top:18px}
+.seg button{flex:1;border:0;background:transparent;padding:9px 10px;border-radius:999px;font-size:13px;font-weight:600;color:var(--mute);transition:.25s}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.note{font-size:12.5px;color:var(--mute);margin:10px 4px 0}
+.rate{margin-top:14px;padding:16px 18px;border-radius:22px;background:rgba(255,255,255,.05);border:1px solid var(--edge)}
+.rate label{display:block;font-size:14px;font-weight:600;margin-bottom:8px}
+.rr{display:flex;gap:8px;align-items:center}
+.rr input{flex:1;min-width:0;padding:12px 14px;border-radius:14px;border:1px solid var(--edge);background:rgba(255,255,255,.06);color:var(--ink);font:inherit;font-size:18px;font-weight:600;transition:.2s}
+.rr input:focus{border-color:var(--cy);outline:none;box-shadow:0 0 0 4px rgba(95,227,255,.16)}
+.rr input[aria-invalid="true"]{border-color:var(--bad)}
+.btn{padding:11px 16px;border-radius:14px;border:1px solid var(--edge);background:var(--glass);font-weight:600;font-size:14px;transition:.2s}
+.btn:hover{background:var(--hi);transform:translateY(-1px)}.btn:active{transform:scale(.96)}
+.err{color:var(--bad);font-size:13px;min-height:18px;margin:6px 2px 0}
+.hd{text-align:center;margin-bottom:34px}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.card{padding:26px;transition:transform .3s,box-shadow .3s}
+.card:hover{transform:translateY(-4px)}
+.tag{font-size:13px;color:var(--mute);font-weight:600}
+.rv{font-size:20px;font-weight:700;margin:4px 0 14px}
+.res{font-size:clamp(28px,5vw,42px);font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;word-break:break-word}
+.fx{font-size:13px;color:var(--mute);margin-top:6px;font-variant-numeric:tabular-nums}
+.diff{margin-top:18px;padding:24px;text-align:center;transition:box-shadow .4s}
+.diff.good{box-shadow:var(--sh),0 0 0 1px var(--ok),0 0 50px rgba(61,220,151,.25)}
+.diff.badd{box-shadow:var(--sh),0 0 0 1px var(--bad),0 0 50px rgba(255,107,122,.22)}
+.dv{font-size:clamp(30px,6vw,48px);font-weight:800;font-variant-numeric:tabular-nums}
+.good .dv{color:var(--ok)}.badd .dv{color:var(--bad)}
+.dm{color:var(--mute);margin-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:22px}
+.chip{padding:12px 20px;border-radius:999px;border:1px solid var(--edge);background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);font-weight:600;font-variant-numeric:tabular-nums;transition:.2s}
+.chip:hover{border-color:var(--cy);transform:translateY(-2px)}.chip:active{transform:scale(.95)}
+.grp{text-align:center;color:var(--mute);font-size:14px;margin:0 0 10px;font-weight:500}
+.info{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.info .card{text-align:center}
+.info .res{margin:6px 0}
+.about{padding:34px;max-width:760px;margin:0 auto}
+.about p{color:var(--mute);margin:0 0 14px}.about p b{color:var(--ink)}
+footer{padding:36px 20px 50px;text-align:center;color:var(--mute);font-size:13px;max-width:700px;margin:0 auto}
+.set{display:none;margin-top:12px}.set.on{display:block}
+.rev{opacity:0;transform:translateY(24px);transition:opacity .8s,transform .8s cubic-bezier(.2,.7,.2,1)}
+.rev.in{opacity:1;transform:none}
+@media(max-width:760px){.cmp,.info{grid-template-columns:1fr}nav a.l{display:none}nav a.l.k{display:inline-block}section{padding:60px 16px}.o1{width:220px;height:220px}.o3,.s2{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}.rev{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true">
+  <div class="px" data-d="14"><div class="orb o1"></div></div>
+  <div class="px" data-d="26"><div class="orb o2"></div></div>
+  <div class="px" data-d="38"><div class="orb o3"></div></div>
+  <div class="px" data-d="30"><div class="sym s1">$</div></div>
+  <div class="px" data-d="20"><div class="sym s2">Rf</div></div>
+</div>
+
+<nav class="glass" aria-label="Main">
+  <a class="logo" href="#home"><i></i>SPECX</a>
+  <a class="l" href="#home">Home</a><a class="l k" href="#converter">Converter</a><a class="l" href="#compare">Rate Comparison</a><a class="l" href="#about">About</a>
+  <button class="tg" id="theme" aria-label="Toggle dark and light mode"><span id="ti">🌙</span></button>
+</nav>
+
+<main>
+<section id="home">
+  <h1>Currency Exchange, Simplified.</h1>
+  <p class="sub">Convert between Maldivian Rufiyaa and US Dollars instantly. Compare the official bank rate with your current exchange rate.</p>
+
+  <div class="conv glass" id="converter">
+    <div class="panels" id="panels">
+      <div class="pn top" id="pUSD"><div class="pl">🇺🇸 <b>USD</b> United States Dollar</div><div class="row"><em>$</em><input class="big" id="usd" inputmode="decimal" autocomplete="off" placeholder="0.00" aria-label="Amount in US dollars"></div></div>
+      <button class="swap" id="swap" aria-label="Swap currencies">⇅</button>
+      <div class="pn bot" id="pMVR"><div class="pl">🇲🇻 <b>MVR</b> Maldivian Rufiyaa</div><div class="row"><em>Rf</em><input class="big" id="mvr" inputmode="decimal" autocomplete="off" placeholder="0.00" aria-label="Amount in Maldivian rufiyaa"></div></div>
+    </div>
+
+    <div class="seg" role="group" aria-label="Rate used for the converted amount">
+      <button id="useBank" aria-pressed="true">Use bank rate</button>
+      <button id="useCur" aria-pressed="false">Use my rate</button>
+    </div>
+    <p class="note" id="usedNote"></p>
+
+    <div class="rate">
+      <label for="cr">Your Current Exchange Rate <span style="color:var(--mute);font-weight:400">(1 USD = X MVR)</span></label>
+      <div class="rr"><input id="cr" inputmode="decimal" autocomplete="off" placeholder="Enter current rate (e.g. 15.50)" aria-describedby="crerr"><button class="btn" id="reset">Reset</button></div>
+      <div class="err" id="crerr" role="alert"></div>
+    </div>
+  </div>
+</section>
+
+<section id="compare">
+  <div class="hd rev"><h2>Rate Comparison</h2><p class="sub">Both rates, side by side, for the same amount.</p></div>
+  <div class="cmp rev">
+    <div class="card glass"><div class="tag">Bank Rate <span id="cfgTag">· configured</span></div><div class="rv" id="bankRate">15.42</div><div class="res" id="bankRes">—</div><div class="fx" id="bankFx"></div></div>
+    <div class="card glass"><div class="tag">Current Rate</div><div class="rv" id="curRate">—</div><div class="res" id="curRes">—</div><div class="fx" id="curFx"></div></div>
+  </div>
+  <div class="diff glass rev" id="diff"><div class="tag">Exchange Difference</div><div class="dv" id="dv">—</div><div class="dm" id="dm">Enter an amount and your current rate to compare.</div></div>
+</section>
+
+<section id="quick">
+  <div class="hd rev"><h2>Quick Amounts</h2><p class="sub">Tap an amount to fill the converter.</p></div>
+  <div class="rev"><p class="grp">US Dollars</p><div class="chips" id="qU"></div><p class="grp">Rufiyaa</p><div class="chips" id="qM"></div></div>
+</section>
+
+<section id="info">
+  <div class="hd rev"><h2>Exchange Rate Information</h2></div>
+  <div class="info rev">
+    <div class="card glass"><div class="tag">Bank Exchange Rate</div><div class="res" id="iB">15.42</div><div class="fx">MVR per 1 USD</div></div>
+    <div class="card glass"><div class="tag">Current Exchange Rate</div><div class="res" id="iC">—</div><div class="fx">MVR per 1 USD (yours)</div></div>
+    <div class="card glass"><div class="tag">Rate Difference</div><div class="res" id="iD">—</div><div class="fx">MVR per 1 USD</div></div>
+  </div>
+  <div class="rev" style="text-align:center;margin-top:22px">
+    <button class="btn" id="cfgBtn" aria-expanded="false">Bank rate settings</button>
+    <div class="set glass" id="set" style="padding:18px;max-width:420px;margin:12px auto 0;text-align:left">
+      <label for="br" style="font-weight:600;font-size:14px">Configured bank rate (1 USD = X MVR)</label>
+      <div class="rr" style="margin-top:8px"><input id="br" inputmode="decimal"><button class="btn" id="brSave">Save</button><button class="btn" id="brReset">15.42</button></div>
+      <div class="err" id="brerr" role="alert"></div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="about glass rev">
+    <h2>About</h2>
+    <p>SPECX converts between US dollars and Maldivian rufiyaa without a sign-up or a server. Type in either box and the other updates as you go.</p>
+    <p>The <b>bank rate is configured at 15.42 MVR per USD</b>. It never changes on its own and no external service feeds it. You can change it under Bank rate settings.</p>
+    <p>Your <b>current rate is entered by you</b>. Use it to see how a dealer or card rate compares with the bank, in the same amount, at the same time.</p>
+  </div>
+</section>
+</main>
+
+<footer>© 2026 SPECX. For information only. Results use the rates configured here and the rate you enter; they are not live market quotes and not a binding offer. Check the final rate with your bank or dealer before you exchange money.</footer>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id), DEF="15.42";
+const S={cur:"USD",amt:"",bank:DEF,mine:"",use:"bank"};
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+// ---- decimal helpers (BigInt, no float math) ----
+const clean=(s,dp)=>{s=String(s).replace(/[^0-9.]/g,"");const i=s.indexOf(".");if(i>=0)s=s.slice(0,i+1)+s.slice(i+1).replace(/\./g,"");const[a,b]=s.split(".");return b===undefined?a.replace(/^0+(?=\d)/,""):a.replace(/^0+(?=\d)/,"")+"."+b.slice(0,dp)};
+const scaled=(s,dp)=>{if(!s||s==="."||!/\d/.test(s))return null;const[a,b=""]=s.split(".");return BigInt(a||"0")*10n**BigInt(dp)+BigInt((b+"0".repeat(dp)).slice(0,dp))};
+const comma=s=>{const[a,b]=s.split(".");const c=a.replace(/\B(?=(\d{3})+(?!\d))/g,",");return b===undefined?c:c+"."+b};
+const money=c=>{const n=c<0n,v=n?-c:c;const w=v/100n,f=String(v%100n).padStart(2,"0");return(n?"-":"")+String(w).replace(/\B(?=(\d{3})+(?!\d))/g,",")+"."+f};
+const rateTxt=r=>{const w=r/10000n,f=String(r%10000n).padStart(4,"0").replace(/0+$/,"").padEnd(2,"0");return w+"."+f};
+const toMVR=(c,R)=>(c*R+5000n)/10000n;            // cents USD -> cents MVR
+const toUSD=(c,R)=>(c*10000n+R/2n)/R;             // cents MVR -> cents USD
+const bankR=()=>scaled(S.bank,4);
+const mineR=()=>{const r=scaled(S.mine,4);return r&&r>0n?r:null};
+const conv=(cents,from,R)=>from==="USD"?toMVR(cents,R):toUSD(cents,R);
+
+// ---- tween for counters ----
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function tween(el,txt){const to=parseFloat(txt);const from=parseFloat(el.dataset.v);el.dataset.v=isNaN(to)?"":to;
+ if(reduce||isNaN(to)||isNaN(from)||from===to){el.textContent=txt;return}
+ const dp=(txt.split(".")[1]||"").length,t0=performance.now();
+ (function f(t){const p=Math.min(1,(t-t0)/450),e=1-Math.pow(1-p,3);el.textContent=p<1?(from+(to-from)*e).toFixed(dp):txt;if(p<1)requestAnimationFrame(f)})(t0)}
+
+function render(){
+ const out=S.cur==="USD"?"MVR":"USD", sym={USD:"$",MVR:"Rf "};
+ const cents=scaled(S.amt,2), B=bankR(), M=mineR();
+ // panels
+ $("pUSD").className="pn "+(S.cur==="USD"?"top":"bot"); $("pMVR").className="pn "+(S.cur==="MVR"?"top":"bot");
+ const R=S.use==="mine"&&M?M:B, label=S.use==="mine"&&M?"your rate":"the bank rate";
+ const typed=$(S.cur.toLowerCase()), other=$(out.toLowerCase());
+ if(document.activeElement!==typed)typed.value=S.amt?comma(S.amt):"";
+ other.value=cents===null?"":money(conv(cents,S.cur,R));
+ $("useCur").setAttribute("aria-pressed",S.use==="mine");$("useBank").setAttribute("aria-pressed",S.use!=="mine");
+ $("usedNote").textContent=S.use==="mine"&&!M?"Enter a valid current rate to convert with your rate. Showing the bank rate for now.":`Converted at ${label}: 1 USD = ${rateTxt(R)} MVR.`;
+ // rates
+ $("bankRate").textContent=rateTxt(B)+" MVR / USD";
+ $("cfgTag").textContent=S.bank===DEF?"· configured default":"· configured (custom)";
+ $("curRate").textContent=M?rateTxt(M)+" MVR / USD":"Not set";
+ tween($("iB"),rateTxt(B)); M?tween($("iC"),rateTxt(M)):($("iC").textContent="—",$("iC").dataset.v="");
+ if(M){const d=M-B;tween($("iD"),(d>0n?"+":d<0n?"−":"")+rateTxt(d<0n?-d:d))}else{$("iD").textContent="—";$("iD").dataset.v=""}
+ // comparison
+ const sy=sym[out],dv=$("diff");dv.className="diff glass rev in";
+ if(cents===null){$("bankRes").textContent="—";$("bankFx").textContent="";$("curRes").textContent="—";$("curFx").textContent="";$("dv").textContent="—";$("dm").textContent="Enter an amount to compare the two rates.";return}
+ const inS=sym[S.cur]+money(cents), bR=conv(cents,S.cur,B);
+ const op=S.cur==="USD"?"×":"÷";
+ $("bankRes").textContent=sy+money(bR);$("bankFx").textContent=`${inS} ${op} ${rateTxt(B)}`;
+ if(!M){$("curRes").textContent="—";$("curFx").textContent="Enter your rate above";$("dv").textContent="—";$("dm").textContent="Enter your current rate to see the difference.";return}
+ const cR=conv(cents,S.cur,M), d=cR-bR;
+ $("curRes").textContent=sy+money(cR);$("curFx").textContent=`${inS} ${op} ${rateTxt(M)}`;
+ if(d===0n){$("dv").textContent=sy+"0.00";$("dm").textContent="Both rates give the same result.";return}
+ $("dv").textContent=(d>0n?"+":"−")+sy+money(d<0n?-d:d);
+ dv.classList.add(d>0n?"good":"badd");
+ $("dm").textContent=d>0n?`Your rate gives you ${sy}${money(d)} more than the bank rate.`:`Your rate gives you ${sy}${money(-d)} less than the bank rate.`;
+}
+
+// ---- inputs ----
+["usd","mvr"].forEach(k=>{const el=$(k),c=k.toUpperCase();
+ el.addEventListener("focus",()=>{S.cur=c;S.amt=S.amt;render()});
+ el.addEventListener("input",()=>{S.cur=c;S.amt=clean(el.value,2);const p=el.selectionStart,n0=el.value.length;el.value=S.amt?comma(S.amt):"";const n1=el.value.length;try{el.setSelectionRange(p+(n1-n0),p+(n1-n0))}catch(e){}render()});
+});
+$("swap").onclick=()=>{const b=$("swap");b.classList.toggle("r");const out=S.cur==="USD"?"MVR":"USD";const c=scaled(S.amt,2),R=S.use==="mine"&&mineR()?mineR():bankR();
+ if(c!==null){const v=money(conv(c,S.cur,R));S.amt=clean(v.replace(/,/g,""),2)}S.cur=out;render()};
+$("useBank").onclick=()=>{S.use="bank";render()};
+$("useCur").onclick=()=>{S.use="mine";render()};
+$("cr").addEventListener("input",e=>{const v=clean(e.target.value,4);e.target.value=v;S.mine=v;store.set("mineRate",v);
+ const r=scaled(v,4),bad=v!==""&&(r===null||r<=0n);e.target.setAttribute("aria-invalid",bad);$("crerr").textContent=bad?"Enter a rate greater than 0, for example 15.50.":"";if(bad)S.mine="";render()});
+$("reset").onclick=()=>{S.mine="";S.use="bank";$("cr").value="";$("cr").removeAttribute("aria-invalid");$("crerr").textContent="";store.set("mineRate","");render()};
+// quick amounts
+[["qU",[10,50,100,500,1000,5000],"USD","$"],["qM",[100,500,1000,5000,10000,50000],"MVR","Rf "]].forEach(([id,a,c,s])=>{
+ a.forEach(n=>{const b=document.createElement("button");b.className="chip";b.textContent=s+n.toLocaleString("en-US");b.onclick=()=>{S.cur=c;S.amt=String(n);render();document.getElementById("converter").scrollIntoView({behavior:reduce?"auto":"smooth",block:"center"})};$(id).appendChild(b)})});
+// bank rate settings
+$("cfgBtn").onclick=()=>{const o=$("set").classList.toggle("on");$("cfgBtn").setAttribute("aria-expanded",o);$("br").value=S.bank};
+$("brSave").onclick=()=>{const v=clean($("br").value,4),r=scaled(v,4);if(r===null||r<=0n){$("brerr").textContent="Enter a bank rate greater than 0.";return}$("brerr").textContent="";S.bank=v;store.set("bankRate",v);render()};
+$("brReset").onclick=()=>{S.bank=DEF;$("br").value=DEF;$("brerr").textContent="";store.set("bankRate",DEF);render()};
+// theme
+const root=document.documentElement;
+function theme(t){root.dataset.theme=t;$("ti").textContent=t==="light"?"☀️":"🌙";store.set("theme",t)}
+$("theme").onclick=()=>theme(root.dataset.theme==="light"?"dark":"light");
+theme(store.get("theme")||(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"));
+// restore
+const sb=store.get("bankRate");if(sb&&scaled(clean(sb,4),4)>0n)S.bank=clean(sb,4);
+const sm=store.get("mineRate");if(sm&&scaled(clean(sm,4),4)>0n){S.mine=clean(sm,4);$("cr").value=S.mine}
+// reveal on scroll
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll(".rev").forEach(n=>io.observe(n));
+// parallax + tilt (fine pointers only)
+if(!reduce&&matchMedia("(pointer:fine)").matches){
+ const px=[...document.querySelectorAll(".px")],cv=$("converter");
+ addEventListener("pointermove",e=>{const x=e.clientX/innerWidth-.5,y=e.clientY/innerHeight-.5;
+  px.forEach(n=>{const d=+n.dataset.d;n.style.transform=`translate(${-x*d}px,${-y*d}px)`});
+  const r=cv.getBoundingClientRect(),dx=(e.clientX-r.left)/r.width-.5,dy=(e.clientY-r.top)/r.height-.5;
+  cv.style.transform=Math.abs(dx)<.9&&Math.abs(dy)<.9?`perspective(900px) rotateX(${-dy*4}deg) rotateY(${dx*5}deg)`:"";},{passive:true});
+}
+render();
+})();
+</script>
+</body>
+</html>
